@@ -5,9 +5,15 @@
   import Linear from "./Linear.svelte";
   import Quantile from "./Quantile.svelte";
   import GuideLine from "./GuideLine.svelte";
-  export let size, guideLinePos, interpolator, quantScale, colScale, strategy; 
+  export let size, 
+            guideLinePos, 
+            interpolator, 
+            quantScale, 
+            colFunc, 
+            colScale, 
+            strategy="quantScale"; 
   
-  let width = 790, svgWidth = 900, svgHeight = 150; 
+  let svgWidth = 900, svgHeight = 150, width = svgWidth/2;
 
   $: xScale = d3.scaleLinear().domain([0, 100]).range([40, width]);
   $: colScale = d3.scaleSequential(interpolator).domain([0, 100]);
@@ -19,17 +25,25 @@
     .scaleBand()
     .domain([0, ...quantTicks])
     .range([40, width]);
+  $: colFunc = strategy === "quantScale" ? quantScale : colScale;
+
 </script>
 
-  <svg height={svgHeight} width={svgWidth}>
+  <svg class="legend" viewBox="0 0 {svgWidth} {svgHeight}">
     {#if strategy === "colScale"}
-    <Linear {width} {svgHeight} {svgWidth} {quantTicks} {colScale}/>
+    <Linear {width} {svgHeight} {svgWidth} {quantTicks} {colFunc}/>
     {/if}
     {#if strategy === "quantScale"}
-     <Quantile {svgHeight} {svgWidth} {xScale2} {quantTicks} {quantScale} />
+     <Quantile {svgHeight} {svgWidth} {xScale2} {quantTicks} {colFunc} />
      {/if} 
+     <GuideLine {xScale} {guideLinePos}/>
+
     <Axis {xScale} {quantTicks} {svgHeight} {svgWidth}/>
-    <GuideLine {xScale} {guideLinePos}/>
 </svg>
 
-
+<style>
+    .legend {
+        position: absolute;
+        bottom: 0;
+    }
+</style>

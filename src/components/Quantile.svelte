@@ -1,13 +1,14 @@
 <script>
-    export let svgHeight, svgWidth, quantTicks, quantScale, xScale2; 
+    export let svgHeight, svgWidth, quantTicks, colFunc, xScale2; 
 </script>
 
-  <g class="quant">
+  <g class="quant" stroke="gray">
+    
     {#each [0, ...quantTicks] as tick, i} 
     <rect 
                 width={xScale2.bandwidth()} 
-                fill={quantScale(tick)} 
-                height="50px" 
+                fill={colFunc(tick)} 
+                height={svgHeight/4}
                 y={(svgHeight/2) - 50}
                 x={xScale2(tick)}></rect>
     {/each}

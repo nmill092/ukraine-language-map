@@ -7,7 +7,7 @@
     y2={85} 
     stroke="firebrick" 
     stroke-width="2" 
-    transform="translate({xScale(guideLinePos)},0)"
+    transform="translate({xScale(guideLinePos) || 40},0)"
     x1={0} 
     x2={0}>
 
