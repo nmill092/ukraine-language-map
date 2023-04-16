@@ -9,7 +9,7 @@
             x1={xScale(i)}
             x2={xScale(i)}
             y1={-(svgHeight/2)-20}
-            y2={-((svgHeight/2) + 75)}
+            y2={-((svgHeight/2) + 50)}
             stroke-width={i === 0 ? 0 : 1}
             stroke-dasharray="1 1"
             stroke="ghostwhite"

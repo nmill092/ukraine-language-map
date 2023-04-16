@@ -1,26 +1,24 @@
 <script>
   import * as d3 from "d3";
-  import { onMount } from "svelte";
+  import { onMount, createEventDispatcher } from "svelte";
   import namesMap from "../namesMap";
 
-  export let interpolator; 
-  export let colors; 
-  export let quantScale; 
-  export let colScale; 
-  export let strategy; 
+  export let quantScale, colScale, strategy;
+  let geoData, langData;
 
-  
-  let geoData;
-  let langData;
+  $: colFunc = strategy === "quantScale" ? quantScale : colScale;
 
-  $: colFunc = strategy === "quantScale" ? quantScale : colScale; 
+  const dispatch = createEventDispatcher();
 
-
-
+  function updateGuideLine(e) {
+    dispatch("guideline", {
+      x: e,
+    });
+  }
 
   onMount(() => {
     d3.json("UA_FULL_Ukraine.geojson").then((d) => {
-      geoData = d
+      geoData = d;
     });
 
     d3.csv("ua_lang_admin1_v02.csv", (d) => {
@@ -39,30 +37,33 @@
     });
   });
 
-  let projection = d3.geoMercator().scale(2200).translate([-750, 2450]);
+  let projection = d3.geoMercator().scale(2100).translate([-750, 2300]);
   let geoPath = d3.geoPath(projection);
 </script>
 
-<svg height="600" width="900">
+<svg viewBox="0 0 800 500">
   {#if geoData && langData && quantScale && colScale}
     <g>
       {#each geoData.features as feature}
-        <path d={geoPath(feature)} fill={colFunc(langData.find(i => i.region === feature.properties["name:en"]).ukr)} stroke="#eaeaea" stroke-width="1" />
-        <title>{feature.properties["name:en"]}, {langData.find(i => i.region === feature.properties["name:en"]).ukr1}</title>
+        <path
+          on:focus={() => updateGuideLine(langData.find((i) => i.region === feature.properties["name:en"]).ukrl1)}
+          on:mouseover={() => updateGuideLine(langData.find((i) => i.region === feature.properties["name:en"]).ukrl1)}
+          on:mouseleave={() => updateGuideLine(0)}
+          d={geoPath(feature)}
+          fill={
+          colFunc(
+            langData.find((i) => i.region === feature.properties["name:en"]).ukrl1
+          )}
+          stroke="#eaeaea"
+          stroke-width="1"
+        />
       {/each}
     </g>
   {/if}
 </svg>
 
-<!-- {#if geoData && langData}
-<ol>
- {#each geoData.features as feature}
-<li>{langData.find(i => i.region === feature.properties["name:en"]).rusl1} - {colScale(langData.find(i => i.region === feature.properties["name:en"]).rusl1)}</li> 
- {/each}
-</ol>
-{/if} -->
 <style>
-    * { 
-        transition: .5s ease all; 
-    }
+  * {
+    transition: 0.5s ease all;
+  }
 </style>
