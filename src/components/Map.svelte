@@ -1,8 +1,10 @@
 <script>
   import { zoom, json, csv, select, geoMercator, geoPath } from 'd3';
   import { onMount, createEventDispatcher } from "svelte";
-  import { fade } from "svelte/transition";
+  import { fade, fly } from "svelte/transition";
   import namesMap from "../namesMap";
+  import { easeCubicInOut } from 'd3';
+  import { cities, countries } from '../data/cities';
   import Tooltip from "./Tooltip.svelte";
   export let colFunc, hovering, stat;
   let geoData,
@@ -52,34 +54,36 @@
       langData = d;
     });
 
-    select(maps).call(zoom().scaleExtent([1, 1]).on("zoom", handleZoom));
+    select(maps).call(zoom().scaleExtent([1, 1.3]).on("zoom", handleZoom));
   });
 
   function handleZoom(e) {
     select(maps).select(".map").attr("transform", e.transform);
   }
 
-  let projection = geoMercator().scale(2100).translate([-520, 2300]);
+  let projection = geoMercator().scale(1800).translate([-420, 2000]);
   let _geoPath = geoPath(projection);
+  let innerHeight,innerWidth;
 </script>
-
+<svelte:window bind:innerWidth={innerWidth} bind:innerHeight={innerHeight}></svelte:window>
 <div bind:this={maps}>
   <Tooltip {stat} {tooltipPos} {selectedRegion} {hovering} {colFunc} />
-  <svg viewBox="0 0 1200 1200">
+  <svg style="background-color:#BCE3F2" viewBox="0 0 1280 5000">
     {#if geoData && langData && worldData && colFunc}
       <g class="map">
-        <g class="worldmap">
+        <g in:fade={{delay: 500}} class="worldmap">
           {#each worldData.features as feature}
             <path
-              in:fade={{ duration: 1000, delay: 1000 }}
               d={_geoPath(feature)}
-              fill="slategray"
-              stroke="gray"
-              opacity=".3"
+              fill="#F8F0E3"
+              stroke="slategray"
+              stroke-width="0.5"
+              opacity="1"
             />
           {/each}
         </g>
-        <g in:fade={{ duration: 1000 }} class="ukrmap">
+    
+        <g in:fade={{ duration: 1000, delay: 1000 }} class="ukrmap">
           {#each geoData.features as feature, i}
             <path
               on:focus={(event) =>
@@ -93,7 +97,7 @@
                     (i) => i.region === feature.properties["name:en"]
                   )
                 )}
-              on:mouseenter={(event) =>
+              on:mouseover={(event) =>
                 updateGuideLine(
                   event,
                   true,
@@ -118,9 +122,30 @@
                 : !selectedRegion
                 ? 1
                 : 0.5}
-              stroke="slategray"
+              stroke="ghostwhite"
               stroke-width="1"
             />
+          {/each}
+        </g>
+        <g  class="cities">
+          {#each cities.features as city, i}
+          <g in:fly={{delay: 2000 + (i*30), y: -200, easing:easeCubicInOut }} class="city">
+            <text  text-anchor="middle" stroke="none" stroke-width=".1" dy="-10" class="city-name" fill="white" transform="translate({projection(city.geometry.coordinates)})">{city.properties.city}</text>
+            <circle r="4" transform="translate({projection(city.geometry.coordinates)})" fill="white" stroke="slategray">
+            </circle>
+
+          </g>
+          {/each}
+        </g>
+        <g in:fly={{delay: 2000}} class="countries">
+          {#each countries.features as country, i}
+          <g class="country">
+            <text text-anchor="middle" 
+                  font-size="{country.properties.country === "Moldova" || country.properties.country === "Sea of Azov" ? '.7rem' : '.85rem'}"
+                  dy="-10" 
+                  class="country-name" 
+                  transform="translate({projection(country.geometry.coordinates)}) {country.properties.country === "Moldova" ? 'rotate(70)' : ''}">{country.properties.country}</text>
+          </g>
           {/each}
         </g>
       </g>
@@ -134,5 +159,21 @@
   }
  path {
   transition: .2s ease all;
+ }
+ .city {
+  pointer-events: none; 
+ }
+ .city-name {
+  text-shadow: 5px 5px 20px black, -5px -5px 20px white;
+  font-size: .7rem; 
+  font-family: "Fira Sans";
+  font-weight: 600;
+ }
+
+ .country-name {
+  font-family: "Fira Sans";
+  fill: slategray;
+  font-weight: 800;
+  text-transform: uppercase;
  }
 </style>

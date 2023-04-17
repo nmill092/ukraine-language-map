@@ -2,7 +2,7 @@
   import Legend from "./components/Legend.svelte";
   import Map from "./components/Map.svelte";
   import Controls from "./components/Controls.svelte";
-  
+
   let size, 
       guideLinePos, 
       stat, 
@@ -22,7 +22,13 @@
 
 
 <div class="container">
-
+ <div class="header">
+    <Controls 
+    bind:strategy = {strategy} 
+    bind:stat={stat}
+    bind:size={size} 
+    bind:interpolator = {interpolator}/>
+</div>
   <div class="map-container">
       <Map 
           on:guideline={updateGuideLinePos} 
@@ -42,9 +48,5 @@
   
 
 
-      <Controls 
-          bind:strategy = {strategy} 
-          bind:stat={stat}
-          bind:size={size} 
-          bind:interpolator = {interpolator}/>
+     
 </div>

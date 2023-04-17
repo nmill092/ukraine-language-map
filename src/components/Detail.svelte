@@ -146,6 +146,7 @@
 
 <style>
     .chart {
+        font-family: "Fira Sans";
         margin-left: auto;
         margin-right: auto;
         margin-top: 1.5rem; 

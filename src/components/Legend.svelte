@@ -52,7 +52,7 @@
 <style>
 .legend-container {
     position: absolute; 
-    bottom: 20%; 
+    bottom: 10%; 
     right: 0%;
     z-index: 5000;
 }

@@ -15,10 +15,6 @@ let clientWidth;
     <span class="tooltip-header">{selectedRegion.region}</span>
     <div class="tooltip-content">
        
-    <!-- <div class="tooltip-row">
-        <span class="row-lbl">Primary language:</span>
-        <span>{selectedRegion.mainLang}</span>
-    </div> -->
     <div class="tooltip-row">
         {#if stat === "ukr" || stat === "rus"}
         <span class="tooltip-question">
@@ -57,6 +53,7 @@ let clientWidth;
    }
 
    .tooltip-question {
+    font-family: "Noto Serif Hebrew";
     display: block;
    }
    .tooltip-content {

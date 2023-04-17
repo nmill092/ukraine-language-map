@@ -9,7 +9,7 @@ export const data = {
     "Kharkivska oblast": "Kharkiv Oblast", 
     "Khersonska oblast":"Kherson Oblast",
     "Khmelnytska oblast":"Khmelnytskyi Oblast", 
-    "Kyivska oblast": "Kiev Oblast",
+    "Kyivska oblast": "Kyiv Oblast",
     "Kirovohradska oblast":"Kirovohrad Oblast", 
     "Luhanska oblast": "Luhansk Oblast",
     "Lvivska oblast": "Lviv Oblast",
