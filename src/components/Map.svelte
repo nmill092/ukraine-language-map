@@ -1,38 +1,43 @@
 <script>
-  import * as d3 from "d3";
+  import { zoom, json, csv, select, geoMercator, geoPath } from 'd3';
   import { onMount, createEventDispatcher } from "svelte";
-  import { draw, fade } from 'svelte/transition';
+  import { fade } from "svelte/transition";
   import namesMap from "../namesMap";
   import Tooltip from "./Tooltip.svelte";
-  export let colFunc, strategy="quantScale", hovering;
-  let geoData, langData, worldData, tooltipPos, selectedRegion, percentage; 
-  let screenSize, screenHeight; 
-
+  export let colFunc, hovering, stat;
+  let geoData,
+    langData,
+    maps,
+    worldData,
+    tooltipPos,
+    selectedRegion,
+    percentage;
+    
   const dispatch = createEventDispatcher();
 
   function updateGuideLine(event, hovering, perc, hovered) {
-    selectedRegion = hovered; 
-    percentage = perc; 
-    let {clientX: tooltipX, clientY: tooltipY} = event;
-    tooltipPos = {x: tooltipX, y: tooltipY}; 
- 
+    selectedRegion = hovered;
+    percentage = perc;
+    let { clientX: tooltipX, clientY: tooltipY } = event;
+    tooltipPos = { x: tooltipX, y: tooltipY };
+
     dispatch("guideline", {
       perc: perc,
       hovering: hovering,
-      hovered: hovered
+      hovered: hovered,
     });
   }
 
   onMount(() => {
-    d3.json("world.json").then((d) => {
-        worldData = d; 
-    })
+    json("world.json").then((d) => {
+      worldData = d;
+    });
 
-    d3.json("UA_FULL_Ukraine.geojson").then((d) => {
+    json("UA_FULL_Ukraine.geojson").then((d) => {
       geoData = d;
     });
 
-    d3.csv("ua_lang_admin1_v02.csv", (d) => {
+    csv("ua_lang_admin1_v02.csv", (d) => {
       return {
         region: namesMap[d.admin1_name],
         numLangSpoke: +d.number_of_named_languages,
@@ -46,47 +51,88 @@
     }).then((d) => {
       langData = d;
     });
+
+    select(maps).call(zoom().scaleExtent([1, 1]).on("zoom", handleZoom));
   });
 
-  let projection = d3.geoMercator().scale(2300).translate([-650, 2550]);
-  let geoPath = d3.geoPath(projection);
-</script>
-<svelte:window bind:innerWidth={screenSize} bind:innerHeight={screenHeight}/>
+  function handleZoom(e) {
+    select(maps).select(".map").attr("transform", e.transform);
+  }
 
-<div class="map-container">
-    <Tooltip {tooltipPos} {selectedRegion} {hovering} {colFunc} {percentage} />
-<svg viewBox="0 0 1200 {screenHeight}">
-  {#if geoData && langData && worldData && colFunc}
-  <g>
-    {#each worldData.features as feature}
-    <path in:fade d={geoPath(feature)} fill="ghostwhite" stroke="gray" opacity=".3"></path>
-    {/each}
-  </g>
-    <g in:fade={{delay:800}}>
-      {#each geoData.features as feature, i}
-        <path
-          on:focus={(event) => updateGuideLine(event, true, langData.find((i) => i.region === feature.properties["name:en"]).ukrl1, langData.find((i) => i.region === feature.properties["name:en"]))}
-          on:mousemove={(event) => updateGuideLine(event, true, langData.find((i) => i.region === feature.properties["name:en"]).ukrl1, langData.find((i) => i.region === feature.properties["name:en"]))}
-          on:mouseleave={(event) => updateGuideLine(event, false, null, null)}
-          d={geoPath(feature)}
-          fill={
-          colFunc(
-            langData.find((i) => i.region === feature.properties["name:en"]).ukrl1
-          )}
-          opacity={selectedRegion && feature.properties["name:en"]===selectedRegion.region ? 1 : !selectedRegion ? 1 : .5}
-          stroke="#000"
-          stroke-width="1"
-        />
-      {/each}
-    </g>
-  {/if}
-</svg>
+  let projection = geoMercator().scale(2100).translate([-520, 2300]);
+  let _geoPath = geoPath(projection);
+</script>
+
+<div bind:this={maps}>
+  <Tooltip {stat} {tooltipPos} {selectedRegion} {hovering} {colFunc} />
+  <svg viewBox="0 0 1200 1200">
+    {#if geoData && langData && worldData && colFunc}
+      <g class="map">
+        <g class="worldmap">
+          {#each worldData.features as feature}
+            <path
+              in:fade={{ duration: 1000, delay: 1000 }}
+              d={_geoPath(feature)}
+              fill="slategray"
+              stroke="gray"
+              opacity=".3"
+            />
+          {/each}
+        </g>
+        <g in:fade={{ duration: 1000 }} class="ukrmap">
+          {#each geoData.features as feature, i}
+            <path
+              on:focus={(event) =>
+                updateGuideLine(
+                  event,
+                  true,
+                  langData.find(
+                    (i) => i.region === feature.properties["name:en"]
+                  )[stat],
+                  langData.find(
+                    (i) => i.region === feature.properties["name:en"]
+                  )
+                )}
+              on:mouseenter={(event) =>
+                updateGuideLine(
+                  event,
+                  true,
+                  langData.find(
+                    (i) => i.region === feature.properties["name:en"]
+                  )[stat],
+                  langData.find(
+                    (i) => i.region === feature.properties["name:en"]
+                  )
+                )}
+              on:mouseleave={(event) =>
+                updateGuideLine(event, false, null, null)}
+              d={_geoPath(feature)}
+              fill={colFunc(
+                langData.find(
+                  (i) => i.region === feature.properties["name:en"]
+                )[stat]
+              )}
+              opacity={selectedRegion &&
+              feature.properties["name:en"] === selectedRegion.region
+                ? 1
+                : !selectedRegion
+                ? 1
+                : 0.5}
+              stroke="slategray"
+              stroke-width="1"
+            />
+          {/each}
+        </g>
+      </g>
+    {/if}
+  </svg>
 </div>
+
 <style>
-  * {
-    transition: 0.5s ease all;
+  path:focus {
+    outline: none; 
   }
-  .map-container {
-    position: relative; 
-  }
+ path {
+  transition: .2s ease all;
+ }
 </style>

@@ -1,6 +1,5 @@
 <script>
-  export let width, svgWidth, svgHeight, quantTicks, colFunc; 
-  
+  export let width, svgHeight, quantTicks, colFunc; 
 </script>
 
 <defs>

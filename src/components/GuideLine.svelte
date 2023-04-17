@@ -15,6 +15,6 @@
 
 <style>
     line {
-        transition: .5s cubic-bezier(0.33, 1, 0.68, 1) transform;
+        transition: .5s cubic-bezier(0.33, 1, 0.68, 1) all;
     }
 </style>

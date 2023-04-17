@@ -1,12 +1,17 @@
 <script>
   import Legend from "./components/Legend.svelte";
   import Map from "./components/Map.svelte";
-  import * as d3chromatic from "d3-scale-chromatic";
-  import * as d3 from "d3";
-  let size = 4, quantScale, guideLinePos=0, hovering, hovered, tooltipPos, colFunc, strategy, interpolator = d3.interpolateRdYlBu;
-  $: interpolators = Object.entries(d3chromatic).filter(([key, value]) =>
-    key.startsWith("interpolate")
-  );
+  import Controls from "./components/Controls.svelte";
+  
+  let size, 
+      guideLinePos, 
+      stat, 
+      hovering, 
+      hovered, 
+      colFunc, 
+      strategy, 
+      interpolator;
+  
 
   function updateGuideLinePos(e) {
     guideLinePos = e.detail.perc; 
@@ -15,27 +20,31 @@
   }
 </script>
 
-<!-- <Map/> -->
 
 <div class="container">
-  <Map 
-      on:guideline={updateGuideLinePos} 
-      {strategy} 
-      {colFunc}
-      {hovering}/>
 
-  <input type="number" min="2" max="15" bind:value={size} />
-  {size} 
+  <div class="map-container">
+      <Map 
+          on:guideline={updateGuideLinePos} 
+          {colFunc}
+          {hovering}
+          {stat}/>
 
-  <Legend {strategy} {guideLinePos} bind:colFunc={colFunc} bind:quantScale={quantScale} {interpolator} {size}/>
+          <Legend {strategy} 
+          {guideLinePos} 
+          {size}
+          {interpolator}
+          bind:colFunc={colFunc} />
+  </div>
+
+
+
   
- <select bind:value={strategy}>
-  <option value="quantScale">quantScale</option>
-  <option value="colScale">colScale</option>
-</select>
-  <select bind:value={interpolator}>
-    {#each interpolators as i}
-      <option value={i[1]}>{i[0].replace("interpolate", "")}</option>
-    {/each}
-  </select>
+
+
+      <Controls 
+          bind:strategy = {strategy} 
+          bind:stat={stat}
+          bind:size={size} 
+          bind:interpolator = {interpolator}/>
 </div>
