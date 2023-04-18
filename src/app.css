@@ -15,7 +15,7 @@ body, html, *{
 }
 
 .header {
-  position: absolute; 
+  overflow-y:scroll;
   font-family: var(--main-font);
   display: flex; 
   flex-direction: column;
@@ -27,6 +27,8 @@ body, html, *{
 }
 
 .map-container { 
+  position: fixed;
+  z-index: -1; 
   width: 100vw; 
   height: 100vh; 
   overflow:hidden;
