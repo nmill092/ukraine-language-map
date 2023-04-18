@@ -39,6 +39,7 @@
           <Legend {strategy} 
           {guideLinePos} 
           {size}
+          {stat}
           {interpolator}
           bind:colFunc={colFunc} />
   </div>

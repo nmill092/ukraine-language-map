@@ -61,7 +61,7 @@
     select(maps).select(".map").attr("transform", e.transform);
   }
 
-  let projection = geoMercator().scale(1800).translate([-420, 2000]);
+  let projection = geoMercator().scale(1800).translate([-200, 2000]);
   let _geoPath = geoPath(projection);
   let innerHeight,innerWidth;
 </script>
@@ -122,7 +122,12 @@
                 : !selectedRegion
                 ? 1
                 : 0.5}
-              stroke="ghostwhite"
+              stroke={selectedRegion &&
+                feature.properties["name:en"] === selectedRegion.region
+                  ? "black"
+                  : !selectedRegion
+                  ? "#E5E4E2"
+                  : "#E5E4E2"}
               stroke-width="1"
             />
           {/each}

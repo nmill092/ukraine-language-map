@@ -52,7 +52,7 @@
                 class="lbl"
                 x={(xScale(selectedRegion.rusl1) + 30)}
                 y={yScale("Russian") + yScale.bandwidth()/2 + 5}>
-                {Math.ceil(selectedRegion.rusl1)}%
+                {Math.floor(selectedRegion.rusl1)}%
             </text>
                 </g>
                 <g>
@@ -67,7 +67,7 @@
                   class="lbl"
                   x={(xScale(selectedRegion.ukrl1) + 30)}
                   y={yScale("Ukrainian") + (yScale.bandwidth()/2) + 5}>
-                  {Math.ceil(selectedRegion.ukrl1)}%
+                  {Math.floor(selectedRegion.ukrl1)}%
               </text>
                 </g>
         </g>
@@ -119,7 +119,7 @@
                 class="lbl"
                 x={(xScale(selectedRegion.rus) + 30)}
                 y={yScale("Russian") + yScale.bandwidth()/2 + 5}>
-                {Math.ceil(selectedRegion.rus)}%
+                {Math.floor(selectedRegion.rus)}%
             </text>
                 </g>
                 <g>
@@ -134,7 +134,7 @@
                   class="lbl"
                   x={(xScale(selectedRegion.ukr) + 30)}
                   y={yScale("Ukrainian") + (yScale.bandwidth()/2) + 5}>
-                  {Math.ceil(selectedRegion.ukr)}%
+                  {Math.floor(selectedRegion.ukr)}%
               </text>
                 </g>
         </g>

@@ -1,6 +1,6 @@
 <script>
     import { fade } from 'svelte/transition'
-    export let svgWidth, svgHeight, xScale, quantTicks; 
+    export let svgHeight, xScale, quantTicks; 
 </script>
 
     <g class="axis">

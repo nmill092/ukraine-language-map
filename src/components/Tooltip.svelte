@@ -22,7 +22,7 @@ let clientWidth;
         </span>
         {:else}
         <span class="tooltip-question">
-            What percentage speak Russian or Ukrainian <strong>as a first language (L1)?</strong>
+            What percentage of residents speak Russian or Ukrainian <strong>as a first language (L1)?</strong>
         </span>
         {/if}
     </div>

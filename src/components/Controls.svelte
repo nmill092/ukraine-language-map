@@ -1,11 +1,11 @@
 <script>
-  import { fly, fade } from 'svelte/transition'
+  import { slide } from 'svelte/transition'
   import * as d3chromatic from "d3-scale-chromatic";
 
   export let strategy = "colScale",
     stat = "ukrl1",
     size = 5,
-    interpolator; 
+    interpolator
 
   let interpolators = Object.entries(d3chromatic).filter(([key, value]) =>
     key.startsWith("interpolate")
@@ -14,11 +14,11 @@
 </script>
 
 
-<div in:fade={{duration:2000}} class="description">
-<h2>How Ukrainian and Russian </h2>
+<div class="description">
+<h2>Visualizing Ukraine's Language Divide 🇺🇦</h2>
 <p> 
   <strong>Language in Ukraine is a deeply political issue.</strong> 
-  While many analyses divide the country into a Ukrainian-speaking west and a Russian-speaking east, the reality is more nuanced.</p>
+  But while many analyses divide the country into a Ukrainian-speaking west and a Russian-speaking east, the reality is far more nuanced.</p>
 <p> This map depicts data on language affiliation and proficiency in each region of Ukraine.* 
   Use the selection box below to control which statistic is visualized on the map. 
   You can also change the color scheme and customize the scale used to categorize the data.
@@ -28,7 +28,7 @@
 <div class="controls">
 
   <div class="control-row">
-    <label>Select a statistic to display: 
+    <label>Select a statistic to display: <br/>
     <select bind:value={stat}>
       <option value="ukrl1">% Ukrainian as a First Language</option>
       <option value="rusl1">% Russian as a First Language</option>
@@ -39,27 +39,28 @@
   </div>
 
 <div class="control-row">
-  <label> Select a color scale type** 
+  <label> Select a color scale type: **  <br/>
   <select bind:value={strategy}>
     <option value="quantScale">Discrete</option>
     <option value="colScale">Continuous</option>
   </select>
   </label>
 
-  <span class="note">** Continuous scales help with perceiving subtle differences between regions, while discrete scales help visualize patterns and clusters.</span>
+  <span class="note">** Continuous scales can help you perceive subtle differences between regions, while discrete scales help visualize patterns and regional clusters.</span>
 
 </div>
 
-
-<div class="control-row">
-  <label> Choose a number of 
+{#if strategy!=="colScale"}
+<div transition:slide class="control-row">
+  <label> Choose a number of color bins: <br/>
     <input type="number" min="2" max="15" bind:value={size} />
   </label>
 </div>
+{/if}
 
 
   <div class="control-row">
-    <label> Select a color scheme
+    <label> Select a color scheme: <br/>
     <select bind:value={interpolator}>
       {#each interpolators as i}
         <option value={i[1]}>{i[0].replace("interpolate", "")}</option>
@@ -70,7 +71,7 @@
 </div>
 
 <div class="sidebar-footer">
-<span class="note">* Data are based on Ukraine's 2001 census, the country's only nationwide census to date. Demographic and political shifts, from the 2004 Orange Revolution to Russia's invasion of Ukraine in 2022, may have affected language affiliation in the country.</span>
+<span class="note">* Data are based on Ukraine's 2001 census, the country's only nationwide census to date. Demographic and political shifts, from the 2004 Orange Revolution to Russia's invasion of Ukraine in 2022, have likely affected language affiliation in the country.</span>
 <span class="note">* Significant minority languages not depicted on this map include Hungarian, Crimean Tatar, Romanian, Greek, Bulgarian, Polish, Rusyn, and Romani, among others.</span>
 </div>
 
