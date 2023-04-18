@@ -15,7 +15,7 @@
 
 
 <div class="description">
-<h2>Visualizing Ukraine's Language Divide 🇺🇦</h2>
+<h2>Visualizing Language Trends in Ukraine 🇺🇦</h2>
 <p> 
   <strong>Language in Ukraine is a deeply political issue.</strong> 
   But while many analyses divide the country into a Ukrainian-speaking west and a Russian-speaking east, the reality is far more nuanced.</p>
